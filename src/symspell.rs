@@ -613,7 +613,9 @@ impl<T: StringStrategy> SymSpell<T> {
                         let mut si = Suggestion::empty();
                         // NOTE: this effectively clamps si_count to a certain minimum value, which it can't go below
                         let si_count: f64 = 10f64
-                            / ((10i64).saturating_pow(self.string_strategy.len(&term_list1[i]) as u32)) as f64;
+                            / ((10i64)
+                                .saturating_pow(self.string_strategy.len(&term_list1[i]) as u32))
+                                as f64;
 
                         si.term = term_list1[i].clone();
                         si.count = si_count as i64;
@@ -624,7 +626,8 @@ impl<T: StringStrategy> SymSpell<T> {
                     let mut si = Suggestion::empty();
                     // NOTE: this effectively clamps si_count to a certain minimum value, which it can't go below
                     let si_count: f64 = 10f64
-                        / ((10i64).saturating_pow(self.string_strategy.len(&term_list1[i]) as u32)) as f64;
+                        / ((10i64).saturating_pow(self.string_strategy.len(&term_list1[i]) as u32))
+                            as f64;
 
                     si.term = term_list1[i].clone();
                     si.count = si_count as i64;
@@ -774,7 +777,7 @@ impl<T: StringStrategy> SymSpell<T> {
         true
     }
 
-    fn create_dictionary_entry(&mut self, key: String, count: i64) -> bool {
+    pub fn create_dictionary_entry(&mut self, key: String, count: i64) -> bool {
         if count < self.count_threshold {
             return false;
         }
@@ -1033,5 +1036,16 @@ mod tests {
         let correction = "it was the best of times it was the worst of times it was the age of wisdom it was the age of foolishness";
         let result = sym_spell.word_segmentation(typo, edit_distance_max);
         assert_eq!(correction, result.segmented_string);
+    }
+
+    #[test]
+    fn test_dictionary_creation() {
+        let mut sym_spell = SymSpell::<UnicodeStringStrategy>::default();
+        sym_spell.create_dictionary_entry("bring".to_string(), 1);
+        sym_spell.create_dictionary_entry("blang".to_string(), 3);
+        sym_spell.create_dictionary_entry("glong".to_string(), 20);
+        let results = sym_spell.lookup("brang", Verbosity::Closest, 2);
+        assert_eq!(results[0], Suggestion::new("bing", 1, 1));
+        assert_eq!(results[1], Suggestion::new("blang", 1, 3));
     }
 }
