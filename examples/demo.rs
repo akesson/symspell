@@ -14,19 +14,6 @@ fn main() {
         let result = symspell.lookup("roket", Verbosity::Top, 2);
         println!("{:?}", result);
     });
-
-    measure("lookup_compound", || {
-        let result = symspell.lookup_compound("whereis th elove hehad dated forImuch of thepast who couqdn'tread in sixtgrade and ins pired him", 2);
-        println!("{:?}", result);
-    });
-
-    measure("lookup_compound", || {
-        let result = symspell.lookup_compound(
-            "the bigjest playrs in te strogsommer film slatew ith plety of funn",
-            2,
-        );
-        println!("{:?}", result);
-    });
 }
 
 pub fn measure<F>(name: &str, mut f: F)
