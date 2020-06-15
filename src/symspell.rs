@@ -120,6 +120,18 @@ impl<T: StringStrategy> SymSpell<T> {
         true
     }
 
+    pub fn info(&self) -> String {
+        let mut tot_len = 0;
+        for (_, vec) in self.deletes.iter() {
+            tot_len += vec.len();
+        }
+        format!(
+            "Words: {}, Deletes: {} with avg vec.len: {}",
+            self.words.len(),
+            self.deletes.len(),
+            tot_len / self.deletes.len()
+        )
+    }
     /// Find suggested spellings for a given input word, using the maximum
     /// edit distance specified during construction of the SymSpell dictionary.
     ///
